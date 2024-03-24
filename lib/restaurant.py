@@ -10,6 +10,7 @@ class Restaurant():
         sql="""CREATE TABLE IF NOT EXISTS Restaurant (id INTEGER PRIMARY KEY AUTOINCREMENT, restaurant_id INTEGER, name TEXT, price INTEGER)"""
         cus.execute(sql)
         c.commit()
+        
     def save(self):
         sql="""INSERT INTO Restaurant (restaurant_id, name, price) VALUES (?,?,?)"""
         cus.execute(sql, (self.restaurant_id, self.name, self.price))
