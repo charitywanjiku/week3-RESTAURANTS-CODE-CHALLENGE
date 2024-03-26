@@ -1,8 +1,12 @@
 from config import CURSOR as cus,CONN as c
+from reviews import Review
+# from restaurant import Restaurant
+
 
 class Customer():
     all = {}
     def __init__(self, restaurant_id, first_name, last_name):
+        
         self.restaurant_id = restaurant_id
         self.first_name = first_name
         self.last_name = last_name
@@ -21,8 +25,8 @@ class Customer():
         cus.execute(sql, (self.restaurant_id, self.first_name, self.last_name))
         c.commit()
     @classmethod
-    def create(cls,restaurant_id, first_name, last_name):
-        a = cls(restaurant_id, first_name, last_name)
+    def create(cls,  restaurant_id, first_name, last_name):
+        a = cls( restaurant_id, first_name, last_name)
         a.save()
         return a  
     @classmethod
@@ -66,6 +70,35 @@ class Customer():
             print (first_name + "" + last_name)
         else:
             print ("Customer not found")
-        
-       
-       
+    def reviews(self):
+        # Retrieve all reviews left by the customer
+        sql = """SELECT * FROM Reviews WHERE customer_id = ?"""
+        cus.execute(sql, (self.id,))
+        rows = cus.fetchall()
+        # Create Review instances from database rows
+        reviews = [Review.instance_from_db(row) for row in rows]
+        return reviews        
+    # def favorite_restaurant(self):
+    #     sql = """
+    #         SELECT r.id AS restaurant_id, r.name AS restaurant_name, AVG(rv.star_rating) AS avg_star_rating
+    #         FROM Reviews rv
+    #         JOIN Customer c ON rv.customer_id = c.id
+    #         JOIN Restaurants r ON rv.restaurant_id = r.id
+    #         WHERE c.id = ?
+    #         GROUP BY r.id, r.name
+    #         ORDER BY avg_star_rating DESC
+    #         LIMIT 1;
+    #     """
+    #     # Execute the SQL query with the customer's ID as parameter
+    #     cus.execute(sql, (self.restaurant_id))
+    #     row = cus.fetchone()
+
+    #     # Check if any data is retrieved
+    #     if row:
+    #         restaurant_id, restaurant_name, avg_star_rating = row
+    #         return {'restaurant_id': restaurant_id, 'restaurant_name': restaurant_name, 'avg_star_rating': avg_star_rating}
+    #     else:
+    #         return None
+    
+
+    

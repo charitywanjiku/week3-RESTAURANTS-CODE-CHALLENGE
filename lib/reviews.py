@@ -65,3 +65,12 @@ class Review:
         # remove  instance from the dictionary
         del type(self).all[self.id]
         self.id= None
+    def reviews(self):
+        # Retrieve all reviews left by the customer
+        sql = """SELECT * FROM Reviews WHERE customer_id = ?"""
+        cus.execute(sql, (self.id,))
+        rows = cus.fetchall()
+        # Create Review instances from database rows
+        reviews = [Review.instance_from_db(row) for row in rows]
+        return reviews
+    
